@@ -6,14 +6,44 @@
 <body>
   <h1>Upload Form</h1>
 
-  <form action="upload.php" method="post" enctype="multipart/form-data">
+  <?php
+  // Check if form is submitted
+  if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Save uploaded text
+    $text = $_POST['text'];
+    file_put_contents('uploaded_text.txt', $text);
+
+    // Save uploaded image
+    $image = $_FILES['image']['tmp_name'];
+    $imagePath = 'uploads/' . $_FILES['image']['name'];
+    move_uploaded_file($image, $imagePath);
+
+    echo '<p>Upload successful!</p>';
+  }
+
+  // Retrieve uploaded text if available
+  $uploadedText = '';
+  if (file_exists('uploaded_text.txt')) {
+    $uploadedText = file_get_contents('uploaded_text.txt');
+  }
+  ?>
+
+  <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
     <label for="text">Text:</label>
-    <textarea name="text" id="text" rows="4" cols="50"></textarea><br><br>
+    <textarea name="text" id="text" rows="4" cols="50"><?php echo $uploadedText; ?></textarea><br><br>
 
     <label for="image">Image:</label>
     <input type="file" name="image" id="image"><br><br>
 
     <input type="submit" value="Upload">
   </form>
+
+  <?php
+  // Display uploaded image if available
+  if (isset($imagePath) && file_exists($imagePath)) {
+    echo '<h2>Uploaded Image:</h2>';
+    echo '<img src="' . $imagePath . '" alt="Uploaded Image" width="300">';
+  }
+  ?>
 </body>
 </html>
