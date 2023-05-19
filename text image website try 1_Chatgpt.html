@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Upload Form</title>
+  <title>上传表单</title>
 </head>
 <body>
-  <h1>Upload Form</h1>
+  <h1>上传表单</h1>
 
   <?php
-  // Check if form is submitted
+  // 检查是否提交了表单
   if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Save uploaded text
+    // 保存上传的文本
     $text = $_POST['text'];
     file_put_contents('uploaded_text.txt', $text);
 
-    // Save uploaded image
+    // 保存上传的图像
     $image = $_FILES['image']['tmp_name'];
     $imagePath = 'uploads/' . $_FILES['image']['name'];
     move_uploaded_file($image, $imagePath);
 
-    echo '<p>Upload successful!</p>';
+    echo '<p>上传成功！</p>';
   }
 
-  // Retrieve uploaded text if available
+  // 检索已上传的文本（如果可用）
   $uploadedText = '';
   if (file_exists('uploaded_text.txt')) {
     $uploadedText = file_get_contents('uploaded_text.txt');
@@ -29,20 +29,20 @@
   ?>
 
   <form action="<?php echo $_SERVER['PHP_SELF']; ?>" method="post" enctype="multipart/form-data">
-    <label for="text">Text:</label>
+    <label for="text">文本：</label>
     <textarea name="text" id="text" rows="4" cols="50"><?php echo $uploadedText; ?></textarea><br><br>
 
-    <label for="image">Image:</label>
+    <label for="image">图像：</label>
     <input type="file" name="image" id="image"><br><br>
 
-    <input type="submit" value="Upload">
+    <input type="submit" value="上传">
   </form>
 
   <?php
-  // Display uploaded image if available
+  // 显示已上传的图像（如果可用）
   if (isset($imagePath) && file_exists($imagePath)) {
-    echo '<h2>Uploaded Image:</h2>';
-    echo '<img src="' . $imagePath . '" alt="Uploaded Image" width="300">';
+    echo '<h2>已上传的图像：</h2>';
+    echo '<img src="' . $imagePath . '" alt="已上传的图像" width="300">';
   }
   ?>
 </body>
